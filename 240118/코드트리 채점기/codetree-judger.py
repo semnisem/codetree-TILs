@@ -4,7 +4,7 @@ from collections import deque
 waiting=PriorityQueue() # 채점 대기 큐
 estimator=[] # 채점 중인 채점기 (채점 중이면 true)
 judge={ } # 채점 중인 태스크 {도메인:(t_start, u, j)}
-history={ } # 채점 완료 스택
+history={ } # 채점 완료 스택 {도메인:[(t_start, t_end, u, j), ...,]}
 
 def push_waiting(t, p, u):
     item=(p, (t, u))
@@ -70,6 +70,8 @@ def end_judging(t, j):
     if estimator[j] is False:
         estimator[j]=True
         task_init = next(((key, value) for key, value in judge.items() if value[2] == j), None)
+        if task_init is None:
+            return
         # print('task_init', task_init)
         task=(task_init[1][0], t, task_init[1][1], task_init[1][2])
         if task_init[0] not in history:
