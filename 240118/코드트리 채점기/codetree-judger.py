@@ -16,7 +16,7 @@ def init(N, u0): # (1, (0, 'codetree.ai/16'))
     estimator=[True for _ in range(N+1)]
     push_waiting(0, 1, u0)
 
-def check_dup_url(u):
+def check_dup_url(u): ###
     # 완전히 일치하는 url이 대기큐에 존재
     for item in waiting.queue:
         if item[1][1]==u:
@@ -33,7 +33,7 @@ def gap_appropriate(domain, t):
         # print('현재', recent_task)
         s=recent_task[0]
         e=recent_task[1]
-        if t<=3*e-2*s:
+        if t<3*e-2*s:
             return False
     return True
     
