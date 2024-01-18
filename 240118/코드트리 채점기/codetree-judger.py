@@ -33,7 +33,7 @@ def gap_appropriate(domain, t):
         # print('현재', recent_task)
         s=recent_task[0]
         e=recent_task[1]
-        if t<3*e-2*s:
+        if t<=3*e-2*s:
             return False
     return True
     
