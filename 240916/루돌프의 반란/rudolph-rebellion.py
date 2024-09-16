@@ -218,6 +218,10 @@ for m in range(1, M+1):
     for p in range(1, P+1):
         if santa_okays[p] != "0":
             santa_scores[p] += 1
+            
+    # 모두 탈락한 경우 게임 즉시 종료
+    if all(status == "0" for status in santa_okays[1:]):
+    break
 
 ### 결과 최종 출력
 print(' '.join([str(score) for score in santa_scores[1:]]))
