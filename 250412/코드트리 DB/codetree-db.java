@@ -45,7 +45,7 @@ public class Main {
         	}
         	else if(cmd.equals("sum")) {
         		int k = Integer.parseInt(st.nextToken());
-        		int result = sum(k);
+        		long result = sum(k);
         		sb.append(result).append("\n");
         	}
         }
@@ -53,9 +53,6 @@ public class Main {
 	}
 	
 	static void init() {
-		/**
-		 * 이는 table에 포함된 모든 데이터를 삭제합니다. 해당 쿼리는 가장 처음에 항상 주어지 며, 최대 50번 주어집니다.
-		 */
 		nameToValue.clear();
         valueToName.clear();
 	}
@@ -82,8 +79,8 @@ public class Main {
 	    return valueToName.get(it.next());
 	}
 	
-	static int sum(int max_value) {
-		int sum = 0;
+	static long sum(int max_value) {
+		long sum = 0;
 	    for (Map.Entry<Integer, String> e : valueToName.headMap(max_value + 1).entrySet()) {
 	        sum += e.getKey();
 	    }
