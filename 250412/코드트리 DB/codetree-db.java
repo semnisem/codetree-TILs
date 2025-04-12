@@ -9,15 +9,14 @@ public class Main {
     static StringBuilder sb;
     
     static int Q;
-    static TreeMap<Integer, String> valueToName = new TreeMap<>();
-    static HashMap<String, Integer> nameToValue = new HashMap<>();
+    static TreeMap<Integer, Integer> valueCount = new TreeMap<>(); // value -> count
+    static TreeMap<Integer, Long> valueSum = new TreeMap<>();      // value -> sum
+    static HashMap<String, Integer> nameToValue = new HashMap<>(); // name -> value
     
 	public static void main(String[] args) throws Exception {
+		// System.setIn(new FileInputStream("src/FW2024/[Testcase]_codetree-db_42.txt"));
 		br = new BufferedReader(new InputStreamReader(System.in));
         sb = new StringBuilder();
-        
-        nameToValue = new HashMap<>();
-        valueToName = new TreeMap<>();
 
         Q = Integer.parseInt(br.readLine());
         
@@ -52,38 +51,54 @@ public class Main {
         System.out.println(sb.toString());
 	}
 	
-	static void init() {
-		nameToValue.clear();
-        valueToName.clear();
-	}
-	
-	static int insert(String n, int v) {
-		if (nameToValue.containsKey(n) || valueToName.containsKey(v)) return 0;
-	    nameToValue.put(n, v);
-	    valueToName.put(v, n);
-	    return 1;
-	}
-	
-	
-	static int delete(String n) {
-		if (!nameToValue.containsKey(n)) return 0;
-	    int val = nameToValue.remove(n);
-	    valueToName.remove(val);
-	    return val;
-	}
-	
-	static String rank(int k) {
-		if (valueToName.size() < k) return "None";
-	    Iterator<Integer> it = valueToName.navigableKeySet().iterator();
-	    for (int i = 1; i < k; i++) it.next();
-	    return valueToName.get(it.next());
-	}
-	
-	static long sum(int max_value) {
-		long sum = 0;
-	    for (Map.Entry<Integer, String> e : valueToName.headMap(max_value + 1).entrySet()) {
-	        sum += e.getKey();
-	    }
-	    return sum;
-	}
+    static void init() {
+        valueCount.clear();
+        valueSum.clear();
+        nameToValue.clear();
+    }
+
+    static int insert(String name, int value) {
+        if (nameToValue.containsKey(name) || valueCount.containsKey(value)) return 0;
+        nameToValue.put(name, value);
+        valueCount.put(value, valueCount.getOrDefault(value, 0) + 1);
+        valueSum.put(value, valueSum.getOrDefault(value, 0L) + value);
+        return 1;
+    }
+
+    static int delete(String name) {
+        if (!nameToValue.containsKey(name)) return 0;
+        int value = nameToValue.remove(name);
+        int count = valueCount.get(value);
+        if (count == 1) {
+            valueCount.remove(value);
+            valueSum.remove(value);
+        } else {
+            valueCount.put(value, count - 1);
+            valueSum.put(value, valueSum.get(value) - value);
+        }
+        return value;
+    }
+
+    static String rank(int k) {
+        int count = 0;
+        for (Map.Entry<Integer, Integer> entry : valueCount.entrySet()) {
+            count += entry.getValue();
+            if (count >= k) {
+                int targetValue = entry.getKey();
+                for (Map.Entry<String, Integer> entry2 : nameToValue.entrySet()) {
+                    if (entry2.getValue() == targetValue) return entry2.getKey();
+                }
+            }
+        }
+        return "None";
+    }
+
+    static long sum(int maxValue) {
+        long sum = 0;
+        for (Map.Entry<Integer, Long> entry : valueSum.headMap(maxValue + 1).entrySet()) {
+            sum += entry.getValue();
+        }
+        return sum;
+    }
 }
+
